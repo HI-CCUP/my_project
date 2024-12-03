@@ -7,16 +7,30 @@ thread_local! {
     static BLOGS: RefCell<Vec<Blog>> = RefCell::new(Vec::new());
 }
 
-//Title
-//Tagi
-//Date
 //komentarze ?
-//edit
+
 #[ic_cdk::update]
-fn add_blog(title: String, date: u32, content: String, tags: Vec<String>) {
-    let blog = Blog::new(title, date, content, tags);
+fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, String> {
+    if title.len() > 250 {
+        return Err("Title is too long!".to_string())
+    }
+    if content.len() > 500 {
+        return Err("Content is too long!".to_string())
+    }
+    if tags.len() > 3{
+        return Err("Too many tags!".to_string())
+    }
+    let blog = Blog::new(title, content, tags);
     BLOGS.with(|blogs| blogs.borrow_mut().push(blog));
+    let last_blog = BLOGS.with(|blogs| blogs
+        .borrow()
+        .last()
+        .expect("Vec should not be empty!").clone());
+    Ok(last_blog)
 }
+
+/*content  <= 500
+tags <= 3 tagi*/
 
 #[ic_cdk::query]
 fn get_blogs() -> Vec<Blog> {
