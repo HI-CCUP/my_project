@@ -10,7 +10,7 @@ thread_local! {
 //Tagi
 //Date
 //komentarze ?
-
+//edit
 #[ic_cdk::update]
 fn add_blog(new_blog: String) {
     BLOGS.with(|blogs| blogs.borrow_mut().push(new_blog));
