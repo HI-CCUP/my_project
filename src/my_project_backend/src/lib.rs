@@ -14,7 +14,7 @@ fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, S
     if title.len() > 250 {
         return Err("Title is too long!".to_string())
     }
-    if content.len() > 500 {
+    if content.len() > 2000 {
         return Err("Content is too long!".to_string())
     }
     if tags.len() > 3{
@@ -30,7 +30,7 @@ fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, S
 }
 
 /*content  <= 500
-tags <= 3 tagi*/
+tags <= 3*/
 
 #[ic_cdk::query]
 fn get_blogs() -> Vec<Blog> {
