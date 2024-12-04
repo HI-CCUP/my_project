@@ -1,9 +1,12 @@
 use std::cell::RefCell;
 use crate::blog::Blog;
+use crate::config::Config;
 
 mod blog;
+mod config;
 
 thread_local! {
+    static CONFIG: RefCell<Config> = RefCell::new(Config::new());
     static BLOGS: RefCell<Vec<Blog>> = RefCell::new(Vec::new());
 }
 
@@ -11,13 +14,14 @@ thread_local! {
 
 #[ic_cdk::update]
 fn add_blog(title: String, content: String, tags: Vec<String>) -> Result<Blog, String> {
-    if title.len() > 250 {
+    let config = CONFIG.with(|config| config.borrow().clone());
+    if title.len() > config.max_title_len as usize { //wmawiamy programowi że to te same typy
         return Err("Title is too long!".to_string())
     }
-    if content.len() > 2000 {
+    if content.len() > config.max_content_len as usize { //wmawiamy programowi że to te same typy
         return Err("Content is too long!".to_string())
     }
-    if tags.len() > 3{
+    if tags.len() > config.max_tags_count as usize { //wmawiamy programowi że to te same typy
         return Err("Too many tags!".to_string())
     }
     let blog = Blog::new(title, content, tags);
